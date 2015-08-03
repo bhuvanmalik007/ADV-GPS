@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Indoor WPS</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="title_activity_add">Access Points</string>
+    <string name="title_activity_splash">Indoor WPS</string>
+</resources>
