@@ -2,7 +2,9 @@ package com.abdroid.wps2;
 
 import android.app.Activity;
 import android.app.ListActivity;
+import android.content.Context;
 import android.database.Cursor;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -20,11 +22,14 @@ import java.util.List;
 
 
 public class Add extends Activity {
-    Button s;
+    Button s,a;
     EditText et1;
     EditText et2;
     EditText et3;
     DatabaseHandler db;
+
+    Double lat,lng;
+
 
 
     @Override
@@ -32,15 +37,17 @@ public class Add extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add);
         Toast.makeText(this, "Add & View Access Points", Toast.LENGTH_SHORT).show();
-        db=new DatabaseHandler(this, null,null, 1);
+        db = new DatabaseHandler(this, null, null, 1);
 
 
-        s=(Button)findViewById(R.id.button2);
-        et1   = (EditText)findViewById(R.id.editText3);
-        et2   = (EditText)findViewById(R.id.editText4);
-        et3 = (EditText)findViewById(R.id.editText5);
+        s = (Button) findViewById(R.id.button2);
+        a = (Button) findViewById(R.id.button3);
+        et1 = (EditText) findViewById(R.id.editText3);
+        et2 = (EditText) findViewById(R.id.editText4);
+        et3 = (EditText) findViewById(R.id.editText5);
 
-       poplist();
+
+        poplist();
 
         s.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -51,14 +58,28 @@ public class Add extends Activity {
                 db.addContact(new Apinfo(et1.getText().toString(), et2.getText().toString(), et3.getText().toString()));
 
                 Log.d("Insert: ", "Inserting ..");
-              poplist();
+                poplist();
 
 
             }
 
         });
 
-       }
+        a.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                LocationManager lm =(LocationManager)getSystemService(Context.LOCATION_SERVICE);
+                lat=lm.getLastKnownLocation(LocationManager.GPS_PROVIDER).getLatitude();
+                lng=lm.getLastKnownLocation(LocationManager.GPS_PROVIDER).getLongitude();
+                et2.setText(lat.toString());
+                et3.setText(lng.toString());
+
+            }
+        });
+
+    }
+
 
    public void poplist()
     {
