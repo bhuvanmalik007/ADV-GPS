@@ -59,8 +59,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
 
-    // Adding new record
-    void addContact(Apinfo ai) {
+
+    void addap(Apinfo ai) {
+        //Add access point
 
         ContentValues values = new ContentValues();
         SQLiteDatabase db = getWritableDatabase();
@@ -78,7 +79,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public Cursor getAllRows() {
         //  String where = null;
         String ALL_KEYS[]=new String[]{key_id,mac,lat,longt};
-        Cursor c=db.query(TABLE_NAME,null,null,null,null,null,key_id+" DESC");
+        Cursor c=db.query(TABLE_NAME,null,null,null,null,null,key_id+" DESC");   //Recent to old order
        if(c!=null)
         {
             c.moveToFirst();

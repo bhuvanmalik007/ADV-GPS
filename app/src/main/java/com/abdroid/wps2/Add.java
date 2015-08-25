@@ -37,11 +37,12 @@ public class Add extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add);
         Toast.makeText(this, "Add & View Access Points", Toast.LENGTH_SHORT).show();
+
         db = new DatabaseHandler(this, null, null, 1);
 
 
-        s = (Button) findViewById(R.id.button2);
-        a = (Button) findViewById(R.id.button3);
+        s = (Button) findViewById(R.id.button2); //save
+        a = (Button) findViewById(R.id.button3); //get automatic gps location
         et1 = (EditText) findViewById(R.id.editText3);
         et2 = (EditText) findViewById(R.id.editText4);
         et3 = (EditText) findViewById(R.id.editText5);
@@ -55,10 +56,13 @@ public class Add extends Activity {
 
                 // Inserting
 
-                db.addContact(new Apinfo(et1.getText().toString(), et2.getText().toString(), et3.getText().toString()));
+                db.addap(new Apinfo(et1.getText().toString(), et2.getText().toString(), et3.getText().toString()));
 
                 Log.d("Insert: ", "Inserting ..");
                 poplist();
+                et1.setText("");
+                et2.setText("");
+                et3.setText("");
 
 
             }
@@ -68,6 +72,7 @@ public class Add extends Activity {
         a.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //get lat long through gps
 
                 LocationManager lm =(LocationManager)getSystemService(Context.LOCATION_SERVICE);
                 lat=lm.getLastKnownLocation(LocationManager.GPS_PROVIDER).getLatitude();
@@ -83,6 +88,10 @@ public class Add extends Activity {
 
    public void poplist()
     {
+
+        //ListView
+
+
         DatabaseHandler d=new DatabaseHandler(this, null,null, 1);
 
         Cursor c1=d.getAllRows();

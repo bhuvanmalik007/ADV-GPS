@@ -32,7 +32,7 @@ public class MainActivity extends Activity {
     WifiManager wifi;
     String wifis[];
     WifiScanReceiver wifiReciever;
-    double da, db, ds, xa, xb, xs, ya, yb, ys;
+
     Button b1;
 
 
@@ -54,8 +54,7 @@ public class MainActivity extends Activity {
             public void onClick(View v) {
                 Intent i=new Intent(MainActivity.this,Add.class);
                 startActivity(i);
-                Toast.makeText(MainActivity.this, "startActivity",
-                        Toast.LENGTH_SHORT).show();
+
             }
         });
 
