@@ -22,32 +22,30 @@ import java.util.List;
 
 
 public class Add extends Activity {
+    GPSTracker gps;
     Button s,a;
     EditText et1;
     EditText et2;
     EditText et3;
     DatabaseHandler db;
-
-    Double lat,lng;
+   // Double lat,lng;
 
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Bundle extras = getIntent().getExtras();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add);
         Toast.makeText(this, "Add & View Access Points", Toast.LENGTH_SHORT).show();
-
-        db = new DatabaseHandler(this, null, null, 1);
-
 
         s = (Button) findViewById(R.id.button2); //save
         a = (Button) findViewById(R.id.button3); //get automatic gps location
         et1 = (EditText) findViewById(R.id.editText3);
         et2 = (EditText) findViewById(R.id.editText4);
         et3 = (EditText) findViewById(R.id.editText5);
-
-
+        db = new DatabaseHandler(this, null, null, 1);
+        et1.setText(extras.getString("mac"));
         poplist();
 
         s.setOnClickListener(new View.OnClickListener() {
@@ -74,12 +72,29 @@ public class Add extends Activity {
             public void onClick(View v) {
                 //get lat long through gps
 
-                LocationManager lm =(LocationManager)getSystemService(Context.LOCATION_SERVICE);
-                lat=lm.getLastKnownLocation(LocationManager.GPS_PROVIDER).getLatitude();
-                lng=lm.getLastKnownLocation(LocationManager.GPS_PROVIDER).getLongitude();
-                et2.setText(lat.toString());
-                et3.setText(lng.toString());
+                /*    LocationManager lm =(LocationManager)getSystemService(Context.LOCATION_SERVICE);
+                lat=lm.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER).getLatitude();
+                lng=lm.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER).getLongitude();
+                //if(lat!=null||lng!=null) {
+                    et2.setText(lat.toString());
+                    et3.setText(lng.toString());
+                //}else Toast.makeText(getBaseContext(),"GPS is off",Toast.LENGTH_LONG);
+*/
+                gps=new GPSTracker(Add.this);
+                if(gps.canGetLocation()){
+                    Double latitude=gps.getLatitude();
+                    Double longitude=gps.getLongitude();
+                    et2.setText(latitude.toString());
+                    et3.setText(longitude.toString());
+                }
+                else
+                {
+                    Toast.makeText(getBaseContext(),"Location Services not enabled! Go to Settings",Toast.LENGTH_LONG).show();
+                }
 
+
+
+                
             }
         });
 

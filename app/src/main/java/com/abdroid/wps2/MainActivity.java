@@ -18,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -53,8 +54,19 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Intent i=new Intent(MainActivity.this,Add.class);
+                i.putExtra("mac","");
                 startActivity(i);
 
+            }
+        });
+
+        lv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent i=new Intent(MainActivity.this, Add.class);
+                i.putExtra("mac",wifiReciever.getSsid(position));
+                startActivity(i);
+                return false;
             }
         });
 
@@ -93,24 +105,38 @@ public class MainActivity extends Activity {
     }
 
     private class WifiScanReceiver extends BroadcastReceiver {
+
+        List<ScanResult> wifiScanList = wifi.getScanResults();
+        public String getSsid(int pos) {
+            return ssid[pos];
+        }
+
+        public String ssid[]=new String[wifiScanList.size()];
+
+
+
         public void onReceive(Context c, Intent intent) {
-            List<ScanResult> wifiScanList = wifi.getScanResults();
+
+
+
             wifis = new String[wifiScanList.size()];
-            int j = 0;
+
+            //int j = 0;
 
 
             // int count = 1; String etWifiList = "";
 
 
             for (int i = 0; i < wifiScanList.size(); i++) {
-                wifis[i] = ((wifiScanList.get(i)).toString());
+                wifis[i] = (wifiScanList.get(i)).toString();
                 wifis[i] += "DISTANCE : ";
-
+                wifis[i] += calculateDistance(wifiScanList.get(i).level,wifiScanList.get(i).frequency);
+                ssid[i]=wifiScanList.get(i).BSSID;
 
             }
 
 
-            for (ScanResult result : wifiScanList) {
+          /*  for (ScanResult result : wifiScanList) {
                 // etWifiList = count++ + ". " + result.SSID;
 
 
@@ -118,16 +144,18 @@ public class MainActivity extends Activity {
                 j++;
 
 
-                lv.setAdapter(new ArrayAdapter<String>(
 
-                        getApplicationContext(), android
+            }  */
+            lv.setAdapter(new ArrayAdapter<String>(
 
-                        .R.layout.simple_list_item_1, wifis));
-                wifi.startScan();
-            }
+                    getApplicationContext(), android
+
+                    .R.layout.simple_list_item_1, wifis));
+            wifi.startScan();
 
 
         }
+
 
         public double calculateDistance(double signalLevelInDb, double freqInMHz) {
             double exp = (27.55 - (20 * Math.log10(freqInMHz)) + Math.abs(signalLevelInDb)) / 20.0;
