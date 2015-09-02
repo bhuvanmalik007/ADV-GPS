@@ -108,6 +108,7 @@ public class MainActivity extends Activity {
 
         List<ScanResult> wifiScanList = wifi.getScanResults();
         public String getSsid(int pos) {
+
             return ssid[pos];
         }
 

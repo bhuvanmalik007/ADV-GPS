@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.Menu;
 
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -28,6 +29,7 @@ public class Add extends Activity {
     EditText et2;
     EditText et3;
     DatabaseHandler db;
+    ListView l;
    // Double lat,lng;
 
 
@@ -44,7 +46,10 @@ public class Add extends Activity {
         et1 = (EditText) findViewById(R.id.editText3);
         et2 = (EditText) findViewById(R.id.editText4);
         et3 = (EditText) findViewById(R.id.editText5);
+        l = (ListView) findViewById(R.id.listView2);
+
         db = new DatabaseHandler(this, null, null, 1);
+
         et1.setText(extras.getString("mac"));
         poplist();
 
@@ -52,16 +57,38 @@ public class Add extends Activity {
             @Override
             public void onClick(View v) {
 
+                //CHECK
+                Cursor ch=db.getAllRows();
+                startManagingCursor(ch);
+
+
+                int flag = 0;
+                String temp;
+                ch.moveToFirst();
+                while (!ch.isAfterLast()) {
+                    temp = ch.getString(1);
+
+                    if(temp.equals(et1.getText().toString())){
+                    flag=1;
+
+                        Toast.makeText(getBaseContext(),"BSSID already exists, long press to delete previous one",Toast.LENGTH_SHORT).show();
+
+                        break;
+                    }
+
+                    ch.moveToNext();
+                }
+
                 // Inserting
 
-                db.addap(new Apinfo(et1.getText().toString(), et2.getText().toString(), et3.getText().toString()));
+                if(flag==0) {
 
-                Log.d("Insert: ", "Inserting ..");
-                poplist();
-                et1.setText("");
-                et2.setText("");
-                et3.setText("");
-
+                    db.addap(new Apinfo(et1.getText().toString(), et2.getText().toString(), et3.getText().toString()));
+                    poplist();
+                    et1.setText("");
+                    et2.setText("");
+                    et3.setText("");
+                }
 
             }
 
@@ -89,16 +116,27 @@ public class Add extends Activity {
                 }
                 else
                 {
-                    Toast.makeText(getBaseContext(),"Location Services not enabled! Go to Settings",Toast.LENGTH_LONG).show();
+                    Toast.makeText(getBaseContext(),"Location Services not enabled!",Toast.LENGTH_SHORT).show();
                 }
 
-
-
-                
             }
         });
 
-    }
+        l.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                Cursor c = ((SimpleCursorAdapter)l.getAdapter()).getCursor();
+                c.moveToPosition(position);
+                String i=c.getString(0);
+                db.remove(i);
+                poplist();
+                return false;
+            }
+        });
+
+
+
+    }  //onCreate
 
 
    public void poplist()
@@ -116,7 +154,6 @@ public class Add extends Activity {
 
         SimpleCursorAdapter s=new SimpleCursorAdapter(this,R.layout.row_layout,c1,fromFieldNames,toView);
 
-        ListView l = (ListView) findViewById(R.id.listView2);
 
         l.setAdapter(s);
 

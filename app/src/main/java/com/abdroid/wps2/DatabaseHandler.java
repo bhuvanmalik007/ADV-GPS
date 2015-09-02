@@ -72,7 +72,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         // Inserting Row
         db.insert(TABLE_NAME, null, values);
-        db.close(); // Closing database connection
+        //db.close(); // Closing database connection
     }
 
 
@@ -87,6 +87,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         return c;
 
+    }
+
+    public void remove(String id){
+        String string =id;
+        db.execSQL("DELETE FROM details WHERE _id = '" + string + "'");
     }
 
 }
